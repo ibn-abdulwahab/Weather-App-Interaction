@@ -1,3 +1,4 @@
+import 'package:countup/countup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:line_icons/line_icons.dart';
@@ -150,9 +151,12 @@ class _PageWidgetState extends State<PageWidget> {
                   ],
                 ),
                 const Spacer(),
-                Text(
-                  widget.weather.temperature.toString(),
+                Countup(
+                  begin: widget.weather.temperature / 2,
+                  end: widget.weather.temperature.toDouble(),
                   style: textTheme.displayLarge,
+                  duration: 1500.ms,
+                  curve: Curves.easeInOut,
                 ),
                 Text(
                   'o',

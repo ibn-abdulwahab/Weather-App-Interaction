@@ -38,6 +38,7 @@ dependencies:
   video_player: ^2.7.0
   line_icons: ^2.0.3
   flutter_animate: ^4.2.0
+  countup: ^0.1.4
 
 dev_dependencies:
   flutter_test:

@@ -7,7 +7,7 @@ class WeatherServices {
   final Set<Weather> _weathers = {
     Weather(
       name: 'snowy',
-      city: 'city',
+      city: 'Moscow',
       humidity: 76,
       wind: 12,
       perception: 40,
@@ -16,7 +16,7 @@ class WeatherServices {
       icon: LineIcons.snowflake,
     ),
     Weather(
-      name: 'sunny',
+      name: 'Rome',
       city: 'city',
       humidity: 76,
       wind: 13,
@@ -38,7 +38,7 @@ class WeatherServices {
     // ),
     Weather(
       name: 'cloudy',
-      city: 'city',
+      city: 'Lagos',
       humidity: 45,
       wind: 10,
       perception: 45,
