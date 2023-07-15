@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:video_player/video_player.dart';
+import 'package:wearther_app/models/weather.dart';
+import 'package:wearther_app/services/weather_services.dart';
 
 import 'components/icon_label_and_text.dart';
 
@@ -22,6 +24,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    _weathers = WeatherServices().all().toList();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _controller.addListener(() {
         setState(() {
@@ -37,29 +40,16 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  List pages = [
-    const PageWidget(),
-    Container(
-      color: Colors.green,
-    ),
-    Container(
-      color: Colors.red,
-    ),
-    Container(
-      color: Colors.brown,
-    ),
-  ];
+  late List _weathers;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView.builder(
         controller: _controller,
-        itemCount: pages.length,
+        itemCount: _weathers.length,
         itemBuilder: (context, index) {
-          print(index);
-          print(currentPageValue);
-          return pages[index];
+          return PageWidget(weather: _weathers[index]);
         },
       ),
     );
@@ -67,7 +57,8 @@ class _HomePageState extends State<HomePage> {
 }
 
 class PageWidget extends StatefulWidget {
-  const PageWidget({super.key});
+  final Weather weather;
+  const PageWidget({super.key, required this.weather});
 
   @override
   State<PageWidget> createState() => _PageWidgetState();
@@ -79,11 +70,12 @@ class _PageWidgetState extends State<PageWidget> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.asset('assets/cloudy.mp4')
-      ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        setState(() {});
-      });
+    _controller =
+        VideoPlayerController.asset('assets/${widget.weather.name}.mp4')
+          ..initialize().then((_) {
+            // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+            setState(() {});
+          });
     _controller
       ..setLooping(true)
       ..play();
@@ -99,7 +91,7 @@ class _PageWidgetState extends State<PageWidget> {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Container(
-      color: const Color.fromRGBO(169, 135, 177, 1),
+      color: widget.weather.color,
       child: Column(
         children: [
           const SizedBox(height: 40),
@@ -111,11 +103,11 @@ class _PageWidgetState extends State<PageWidget> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Lafia city',
+                      '${widget.weather.city} city',
                       style: textTheme.headlineSmall,
                     ),
                     Text(
-                      'Today, Aug 28, 10:35',
+                      'Today, Jul 15, 10:35',
                       style: textTheme.labelSmall,
                     ),
                   ],
@@ -141,12 +133,12 @@ class _PageWidgetState extends State<PageWidget> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     RepaintBoundary(
-                      child: const Icon(LineIcons.cloud)
+                      child: Icon(widget.weather.icon)
                           .animate(delay: 500.ms)
                           .slideY(),
                     ),
                     RepaintBoundary(
-                      child: const Text('Mostly\ncloudy')
+                      child: Text('Mostly\n${widget.weather.name}')
                           .animate(
                             delay: 500.ms,
                           )
@@ -159,7 +151,7 @@ class _PageWidgetState extends State<PageWidget> {
                 ),
                 const Spacer(),
                 Text(
-                  '34',
+                  widget.weather.temperature.toString(),
                   style: textTheme.displayLarge,
                 ),
                 Text(
@@ -219,7 +211,7 @@ class _PageWidgetState extends State<PageWidget> {
                 ),
                 const SizedBox(height: 15),
                 RepaintBoundary(
-                  child: const Row(
+                  child: Row(
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -228,19 +220,19 @@ class _PageWidgetState extends State<PageWidget> {
                           IconLabelAndText(
                             icon: LineIcons.highTemperature,
                             label: 'Temperature',
-                            text: '34',
+                            text: widget.weather.temperature.toString(),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                           ),
                           IconLabelAndText(
                             icon: LineIcons.meteor,
                             label: 'Perception',
-                            text: '50%',
+                            text: '${widget.weather.perception}%',
                           ),
                         ],
                       ),
-                      Spacer(),
+                      const Spacer(),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
@@ -248,19 +240,19 @@ class _PageWidgetState extends State<PageWidget> {
                           IconLabelAndText(
                             icon: Icons.wind_power_outlined,
                             label: 'Wind',
-                            text: '10 km/h',
+                            text: '${widget.weather.wind} km/h',
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                           ),
                           IconLabelAndText(
                             icon: LineIcons.tint,
                             label: 'Humidity',
-                            text: '89%',
+                            text: '${widget.weather.humidity}%',
                           ),
                         ],
                       ),
-                      SizedBox(width: 30)
+                      const SizedBox(width: 30)
                     ],
                   )
                       .animate()
